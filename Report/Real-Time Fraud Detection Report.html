@@ -1,0 +1,709 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Real-Time Fraud Detection in Transactions.</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-default_background {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray_background {
+	background: rgba(248, 248, 247, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(248, 243, 252, 1);
+}
+.highlight-pink_background {
+	background: rgba(252, 241, 246, 1);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(248, 248, 247, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(248, 243, 252, 1);
+}
+.block-color-pink_background {
+	background: rgba(252, 241, 246, 1);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-uiBlue { background-color: undefined; }
+.select-value-color-pink { background-color: rgba(225, 136, 179, 0.27); }
+.select-value-color-purple { background-color: rgba(168, 129, 197, 0.27); }
+.select-value-color-green { background-color: rgba(123, 183, 129, 0.27); }
+.select-value-color-gray { background-color: rgba(84, 72, 49, 0.15); }
+.select-value-color-transparentGray { background-color: undefined; }
+.select-value-color-translucentGray { background-color: undefined; }
+.select-value-color-orange { background-color: rgba(224, 124, 57, 0.27); }
+.select-value-color-brown { background-color: rgba(210, 162, 141, 0.35); }
+.select-value-color-red { background-color: rgba(244, 171, 159, 0.4); }
+.select-value-color-yellow { background-color: rgba(236, 191, 66, 0.39); }
+.select-value-color-blue { background-color: rgba(93, 165, 206, 0.27); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="1a88ae25-7855-8065-8a2c-e729daf5f5b5" class="page sans"><header><h1 class="page-title">Real-Time Fraud Detection in Transactions.</h1><p class="page-description"></p></header><div class="page-body"><hr id="1a88ae25-7855-804a-b631-de0c26538b4f"/><h1 id="1a88ae25-7855-80b0-86ec-c096e0931167" class="">1. DATASET: THE PAYSIM DATASET</h1><h2 id="1a88ae25-7855-80de-8638-f90af02635a4" class="">1.1 Background and Origin</h2><p id="1a88ae25-7855-8035-a377-dfa6bbe2fb8d" class="">The <strong>PaySim dataset</strong> is a <strong>synthetic dataset</strong> that simulates <strong>mobile money transactions</strong>. Originally, it was published on <strong>Kaggle</strong>, where it can be downloaded either manually or via the <strong>Kaggle API</strong>. The dataset is designed to <strong>mimic real financial transactions</strong> in terms of scale, distribution, and types of operations, while not revealing any sensitive private customer data (since it’s artificially generated).</p><p id="1a88ae25-7855-80bc-9751-fda4bcf7372b" class=""><strong>Why Synthetic?</strong></p><p id="1a88ae25-7855-80fa-99d3-eee95023a6db" class="">Real financial transaction data is typically <strong>strictly confidential</strong> (due to privacy regulations and to avoid revealing vulnerabilities). Hence, PaySim was created to provide <strong>researchers</strong> and <strong>developers</strong> a near-realistic scenario to test <strong>fraud detection</strong> algorithms.</p><p id="1a88ae25-7855-8078-b3b0-d4c6bad32a12" class=""><strong>Kaggle Link:</strong></p><p id="1a88ae25-7855-809c-ad4e-d55f07bdfab7" class="">We can find the dataset on Kaggle by searching for “PaySim dataset.” Typically we can do something like:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="1a88ae25-7855-807d-9fc9-fafaf245062e" class="code"><code class="language-Shell" style="white-space:pre-wrap;word-break:break-all">kaggle datasets download -d YOURUSERNAME/paysim
+</code></pre><p id="1a88ae25-7855-806a-81a7-d29fc06911ff" class="">to retrieve it with the Kaggle CLI, or we can download it directly from the Kaggle website.</p><h2 id="1a88ae25-7855-8037-97ee-d4f453d66429" class="">1.2 Size and Format</h2><ul id="1a88ae25-7855-8089-ae66-dfe46955318c" class="bulleted-list"><li style="list-style-type:disc"><strong>Rows</strong>: ~6.36 million transactions (some versions might slightly differ).</li></ul><ul id="1a88ae25-7855-80e9-bd8c-fb3981e0b137" class="bulleted-list"><li style="list-style-type:disc"><strong>File Size</strong>: ~500 MB in CSV form.</li></ul><ul id="1a88ae25-7855-808c-acb6-cc22954b7efb" class="bulleted-list"><li style="list-style-type:disc"><strong>Format</strong>: Plain CSV with a header row.</li></ul><p id="1a88ae25-7855-8057-80c2-cf7e4785668d" class="">This large volume makes it ideal for <strong>big data</strong> or <strong>streaming</strong> pipeline demonstrations.</p><h2 id="1a88ae25-7855-8044-a86a-f97aa857f42f" class="">1.3 Columns in the PaySim Dataset</h2><p id="1a88ae25-7855-80ae-95ad-e8f010da4292" class="">The dataset typically includes the following columns (naming might differ slightly depending on the version used):</p><ol type="1" id="1a88ae25-7855-8087-8f55-e8eeeda347ae" class="numbered-list" start="1"><li><strong>step</strong><ul id="1a88ae25-7855-80c2-b28d-cf24b3a95eae" class="bulleted-list"><li style="list-style-type:disc"><em>Integer</em>: Each “step” corresponds to a discrete time unit in which transactions occurred.</li></ul><ul id="1a88ae25-7855-80ba-a69d-f8a8ae801b6a" class="bulleted-list"><li style="list-style-type:disc">Think of it as an approximation of “hours” or “minutes,” but the dataset’s authors just named it “step.”</li></ul></li></ol><ol type="1" id="1a88ae25-7855-80ff-bfc7-f598ddcfc3eb" class="numbered-list" start="2"><li><strong>type</strong><ul id="1a88ae25-7855-80d8-bf53-d5e8caf8fe29" class="bulleted-list"><li style="list-style-type:disc"><em>Categorical</em>: Transaction type. Common values include:<ul id="1a88ae25-7855-80ba-837d-eaf485de374a" class="bulleted-list"><li style="list-style-type:circle"><strong>PAYMENT</strong></li></ul><ul id="1a88ae25-7855-80ec-b554-d69bf22c12c9" class="bulleted-list"><li style="list-style-type:circle"><strong>TRANSFER</strong></li></ul><ul id="1a88ae25-7855-80ab-b373-fc555b967e42" class="bulleted-list"><li style="list-style-type:circle"><strong>CASH_OUT</strong></li></ul><ul id="1a88ae25-7855-80cd-b00d-c0bd64202631" class="bulleted-list"><li style="list-style-type:circle"><strong>DEBIT</strong></li></ul><ul id="1a88ae25-7855-809c-9abe-def8bccc5007" class="bulleted-list"><li style="list-style-type:circle"><strong>CASH_IN</strong> (in some versions)</li></ul></li></ul><ul id="1a88ae25-7855-8009-a0e9-d8385ccd9fec" class="bulleted-list"><li style="list-style-type:disc">This is an important feature because <strong>fraud</strong> often correlates with <strong>TRANSFER</strong> or <strong>CASH_OUT</strong>.</li></ul></li></ol><ol type="1" id="1a88ae25-7855-802f-9f74-ebee62de4efc" class="numbered-list" start="3"><li><strong>amount</strong><ul id="1a88ae25-7855-8015-a33f-f872248c91c0" class="bulleted-list"><li style="list-style-type:disc"><em>Float</em>: The monetary value of the transaction. Ranges from small amounts to very large ones (up to 10^7 or so).</li></ul></li></ol><ol type="1" id="1a88ae25-7855-8099-9b0a-f07236c273c4" class="numbered-list" start="4"><li><strong>nameOrig</strong><ul id="1a88ae25-7855-8048-a0db-dc45ce3289d9" class="bulleted-list"><li style="list-style-type:disc"><em>String</em>: The unique identifier of the sender (origin) account. Often in the format <code>Cxxxxxxx</code>.</li></ul></li></ol><ol type="1" id="1a88ae25-7855-804d-b1ed-cab16c568775" class="numbered-list" start="5"><li><strong>oldbalanceOrg</strong><ul id="1a88ae25-7855-800b-85c5-de72ed08e949" class="bulleted-list"><li style="list-style-type:disc"><em>Float</em>: The sender’s account balance before the transaction.</li></ul></li></ol><ol type="1" id="1a88ae25-7855-8069-8b4b-d3aac0914169" class="numbered-list" start="6"><li><strong>newbalanceOrig</strong><ul id="1a88ae25-7855-8075-892c-ccabad456ffb" class="bulleted-list"><li style="list-style-type:disc"><em>Float</em>: The sender’s account balance after the transaction.</li></ul></li></ol><ol type="1" id="1a88ae25-7855-8066-8a58-de739c18c5a8" class="numbered-list" start="7"><li><strong>nameDest</strong><ul id="1a88ae25-7855-80d7-a63d-c2bb7e32bc5f" class="bulleted-list"><li style="list-style-type:disc"><em>String</em>: The unique identifier of the recipient (destination) account. Often <code>Cxxxxxxx</code> for customer, or <code>Mxxxxxxx</code> for merchant.</li></ul></li></ol><ol type="1" id="1a88ae25-7855-804f-abd8-f20263babe8b" class="numbered-list" start="8"><li><strong>oldbalanceDest</strong><ul id="1a88ae25-7855-8004-98b6-f1fb53bf4bd2" class="bulleted-list"><li style="list-style-type:disc"><em>Float</em>: The recipient’s account balance before the transaction.</li></ul></li></ol><ol type="1" id="1a88ae25-7855-804e-80f1-caa3d6958cc7" class="numbered-list" start="9"><li><strong>newbalanceDest</strong><ul id="1a88ae25-7855-804d-93d9-c00be36fc64e" class="bulleted-list"><li style="list-style-type:disc"><em>Float</em>: The recipient’s account balance after the transaction.</li></ul></li></ol><ol type="1" id="1a88ae25-7855-805e-8f1e-dda05b388024" class="numbered-list" start="10"><li><strong>isFraud</strong></li></ol><ul id="1a88ae25-7855-809a-b1fe-fe6568be32ca" class="bulleted-list"><li style="list-style-type:disc"><em>Integer (0 or 1)</em>: <strong>Primary label</strong> indicating whether the transaction is fraudulent (<code>1</code>) or legitimate (<code>0</code>).</li></ul><ul id="1a88ae25-7855-8089-973b-d64a0724671c" class="bulleted-list"><li style="list-style-type:disc">Highly imbalanced: only a tiny fraction are <code>1</code>.</li></ul><ol type="1" id="1a88ae25-7855-803c-a029-e54c18da0161" class="numbered-list" start="1"><li><strong>isFlaggedFraud</strong></li></ol><ul id="1a88ae25-7855-807b-9c4e-f429db7dd56d" class="bulleted-list"><li style="list-style-type:disc"><em>Integer (0 or 1)</em>: Whether the transaction was flagged as fraud by some older heuristic approach.</li></ul><ul id="1a88ae25-7855-8050-a109-f5217727afb2" class="bulleted-list"><li style="list-style-type:disc">Typically near zero in most rows.</li></ul><figure id="1a88ae25-7855-805e-bb8c-f401445accfc" class="image"><a href="Real-Time%20Fraud%20Detection%20in%20Transactions%201a88ae25785580658a2ce729daf5f5b5/image.png"><img style="width:2350px" src="Real-Time%20Fraud%20Detection%20in%20Transactions%201a88ae25785580658a2ce729daf5f5b5/image.png"/></a></figure><h2 id="1a88ae25-7855-80ee-b693-fe53b24ce352" class="">1.4 Key Dataset Characteristics</h2><ul id="1a88ae25-7855-809c-b031-f53ef32bfb15" class="bulleted-list"><li style="list-style-type:disc"><strong>Synthetic</strong> but distributionally realistic.</li></ul><ul id="1a88ae25-7855-806f-8d52-c9452aead118" class="bulleted-list"><li style="list-style-type:disc"><strong>Unbalanced</strong>: ~0.13% or fewer transactions labeled as fraud.</li></ul><ul id="1a88ae25-7855-80ad-a61e-d2f337e94895" class="bulleted-list"><li style="list-style-type:disc"><strong>Transaction diversity</strong>: multiple transaction “types,” with typical money-laundering or fraud patterns lying mostly in <code>TRANSFER</code> and <code>CASH_OUT</code>.</li></ul><hr id="1a88ae25-7855-808a-bb90-c06068c09486"/><h1 id="1a88ae25-7855-8055-bf77-e6ce62ca6816" class="">2. EXPLANATION OF EACH COLUMN</h1><p id="1a88ae25-7855-80d1-882e-c54fdce664da" class="">Although summarized above, let’s detail each column thoroughly:</p><ol type="1" id="1a88ae25-7855-802c-ac6c-dddfd24177ea" class="numbered-list" start="1"><li><strong>step</strong><ul id="1a88ae25-7855-80f5-bfe8-ca803f78f61d" class="bulleted-list"><li style="list-style-type:disc">Each unit in this feature could be considered an incremental time step. Some interpreters assume it’s an hour. If the highest step is ~743, that might represent a month’s worth of hours.</li></ul><ul id="1a88ae25-7855-8071-948c-d6f6307d2904" class="bulleted-list"><li style="list-style-type:disc">For time-series or streaming analysis, <code>step</code> can be used to see how transactions evolve over time.</li></ul></li></ol><ol type="1" id="1a88ae25-7855-8018-a1a4-c1bb7084fb9c" class="numbered-list" start="2"><li><strong>type</strong><ul id="1a88ae25-7855-8036-a7c4-df54b5bde550" class="bulleted-list"><li style="list-style-type:disc">Common categories:<ul id="1a88ae25-7855-80a0-97c4-d1cae5d6b8b4" class="bulleted-list"><li style="list-style-type:circle"><strong>TRANSFER</strong>: Money moves from one account to another.</li></ul><ul id="1a88ae25-7855-80c2-8abe-d4eb4346887d" class="bulleted-list"><li style="list-style-type:circle"><strong>CASH_OUT</strong>: The account holder withdraws money, presumably as cash.</li></ul><ul id="1a88ae25-7855-809d-ba8b-c8f212492fe5" class="bulleted-list"><li style="list-style-type:circle"><strong>PAYMENT</strong>: Payment to a merchant.</li></ul><ul id="1a88ae25-7855-80b9-a5d9-ef6152a059e4" class="bulleted-list"><li style="list-style-type:circle"><strong>DEBIT</strong>: Possibly a direct debit from an account by a third party.</li></ul><ul id="1a88ae25-7855-800a-b781-d9ab271eb302" class="bulleted-list"><li style="list-style-type:circle">(Sometimes <strong>CASH_IN</strong> if the dataset variant includes it.)</li></ul></li></ul><ul id="1a88ae25-7855-806b-b67f-f995cc2a028d" class="bulleted-list"><li style="list-style-type:disc">This is an important predictor because historically, fraudulent transactions often cluster in certain types.</li></ul></li></ol><ol type="1" id="1a88ae25-7855-80ca-8afe-c6bb307a5606" class="numbered-list" start="3"><li><strong>amount</strong><ul id="1a88ae25-7855-80e1-995d-fb60bbcd183d" class="bulleted-list"><li style="list-style-type:disc">The transaction’s monetary value. Ranges widely from negligible amounts to multi-million.</li></ul><ul id="1a88ae25-7855-806a-9bef-cc17455ff963" class="bulleted-list"><li style="list-style-type:disc">Fraud can be high or low amounts, so we must carefully consider distribution.</li></ul></li></ol><ol type="1" id="1a88ae25-7855-802a-ae93-d6f5dc1b7feb" class="numbered-list" start="4"><li><strong>nameOrig</strong> / <strong>nameDest</strong><ul id="1a88ae25-7855-8073-9589-e8094448140f" class="bulleted-list"><li style="list-style-type:disc">Strings: <code>Cxxxxxxx</code> for customer, <code>Mxxxxxxx</code> for merchant.</li></ul><ul id="1a88ae25-7855-80e3-8fd5-e14288b0a2c5" class="bulleted-list"><li style="list-style-type:disc">Not always needed for direct numeric modeling but can be used for feature engineering (like counting repeated patterns to the same “destination,” etc.).</li></ul></li></ol><ol type="1" id="1a88ae25-7855-80c7-9025-f3b29249ee6e" class="numbered-list" start="5"><li><strong>oldbalanceOrg</strong> / <strong>newbalanceOrg</strong><ul id="1a88ae25-7855-8074-bd3b-c8282321e2bd" class="bulleted-list"><li style="list-style-type:disc">The balance before and after the transaction for the origin’s account.</li></ul><ul id="1a88ae25-7855-80c7-90a1-c81fc6d4272c" class="bulleted-list"><li style="list-style-type:disc">Potentially important: a fraudulent user might have suspicious patterns like “oldbalanceOrg = amount, newbalanceOrg = 0” repeatedly.</li></ul></li></ol><ol type="1" id="1a88ae25-7855-8091-a3a4-ccfb381d4968" class="numbered-list" start="6"><li><strong>oldbalanceDest</strong> / <strong>newbalanceDest</strong><ul id="1a88ae25-7855-800e-ae59-ec9997b48687" class="bulleted-list"><li style="list-style-type:disc">Similarly for the recipient’s account.</li></ul><ul id="1a88ae25-7855-8006-ba5a-f2dfda42ea8f" class="bulleted-list"><li style="list-style-type:disc">If a destination is frequently receiving large amounts, that might be a red flag or normal merchant activity.</li></ul></li></ol><ol type="1" id="1a88ae25-7855-8082-bd3a-cffdd0650755" class="numbered-list" start="7"><li><strong>isFraud</strong><ul id="1a88ae25-7855-806e-8057-e62008eeb25d" class="bulleted-list"><li style="list-style-type:disc">The main label used for <strong>supervised</strong> or <strong>evaluation</strong> tasks.</li></ul><ul id="1a88ae25-7855-80af-8efa-cb4e5f69e992" class="bulleted-list"><li style="list-style-type:disc">In our anomaly detection approach, we often used this label <strong>only</strong> at the evaluation stage, because we do an <strong>unsupervised</strong> or <strong>semi-supervised</strong> approach.</li></ul></li></ol><ol type="1" id="1a88ae25-7855-8002-880a-cd54477e1abc" class="numbered-list" start="8"><li><strong>isFlaggedFraud</strong><ul id="1a88ae25-7855-802d-b992-e68a71812ce6" class="bulleted-list"><li style="list-style-type:disc">Often zero in most rows.</li></ul><ul id="1a88ae25-7855-80e2-a50a-ec44df6db8f1" class="bulleted-list"><li style="list-style-type:disc">The original creators said it flags transactions that are abnormally high (some threshold). Not extremely useful in practice, but can be a baseline.</li></ul></li></ol><hr id="1a88ae25-7855-805d-aa20-c4e36ce3ecd4"/><h1 id="1a88ae25-7855-80c0-a63c-e78fa8a0d2a7" class="">3. OBJECTIVE OF THE PROJECT</h1><p id="1a88ae25-7855-809e-9f0d-ebb00ce618ef" class=""><strong>Goal</strong>: <strong>Real-Time Anomaly Detection in Financial Transactions</strong> using the PaySim dataset as a stand-in for real mobile money data. Specifically:</p><ol type="1" id="1a88ae25-7855-803f-9d72-cdb8559dff37" class="numbered-list" start="1"><li><strong>Detect</strong> suspicious or fraudulent transactions <strong>on the fly</strong> (near real time).</li></ol><ol type="1" id="1a88ae25-7855-80ed-9f92-eab25441e228" class="numbered-list" start="2"><li><strong>Leverage</strong> an <strong>unsupervised</strong> or <strong>semi-supervised</strong> approach (e.g., IsolationForest, LocalOutlierFactor, Autoencoders) to handle the extreme class imbalance.</li></ol><ol type="1" id="1a88ae25-7855-80ce-97b0-e85f9ee9693b" class="numbered-list" start="3"><li><strong>Demonstrate</strong> a big data streaming pipeline with <strong>Kafka</strong> + <strong>Spark Structured Streaming</strong> for real-time ingestion.</li></ol><ol type="1" id="1a88ae25-7855-80a3-a586-f66acbe73bfb" class="numbered-list" start="4"><li><strong>Provide</strong> a user-friendly dashboard with <strong>Streamlit</strong> that can visualize the flagged anomalies in near-real time, offering <strong>insights</strong> to risk analysts or external stakeholders.</li></ol><hr id="1a88ae25-7855-8057-b053-c077a00e79ca"/><h1 id="1a88ae25-7855-806b-9a9e-cd1af2ce2d54" class="">4. INTRODUCTION TO THE PROJECT</h1><h2 id="1a88ae25-7855-806e-bb1b-e6e393d887c8" class="">4.1 Overview</h2><p id="1a88ae25-7855-80b3-81fe-e5297732be94" class="">This project aims to simulate a <strong>full end-to-end</strong> pipeline for <strong>fraud detection</strong>:</p><ol type="1" id="1a88ae25-7855-8051-bd91-d0a9c0d9acb4" class="numbered-list" start="1"><li><strong>Data Ingestion</strong>: Instead of a real transaction feed, we have the PaySim CSV. We mimic streaming by publishing rows to <strong>Kafka</strong>.</li></ol><ol type="1" id="1a88ae25-7855-80f0-af90-dd6cedff187c" class="numbered-list" start="2"><li><strong>Stream Processing</strong>: <strong>Spark Structured Streaming</strong> consumes from Kafka, runs a <strong>pre-trained</strong> anomaly detection model (like IsolationForest), and flags suspicious transactions.</li></ol><ol type="1" id="1a88ae25-7855-8086-8f17-efd6a68ce20f" class="numbered-list" start="3"><li><strong>Storage</strong>: The flagged anomalies are written out to <strong>CSV</strong> files in near-real time.</li></ol><ol type="1" id="1a88ae25-7855-80be-9773-d3a597a7f529" class="numbered-list" start="4"><li><strong>Visualization</strong>: A <strong>Streamlit</strong> dashboard loads those flagged anomalies, draws charts, and provides a user-friendly monitoring tool.</li></ol><h2 id="1a88ae25-7855-8078-8cc1-c95e7737d868" class="">4.2 Contents of the Project</h2><ol type="1" id="1a88ae25-7855-80af-8ef9-cd2aa2e3c359" class="numbered-list" start="1"><li><strong>EDA &amp; Feature Engineering Notebook</strong> (a local or Colab notebook)</li></ol><ol type="1" id="1a88ae25-7855-8021-9b78-ff8c559d93fc" class="numbered-list" start="2"><li><strong>Model Training</strong> with unsupervised ML (IsolationForest, LOF, Autoencoder).</li></ol><ol type="1" id="1a88ae25-7855-8030-952f-e259c4bedebf" class="numbered-list" start="3"><li><strong>Kafka Producer Script</strong> (<code>kafka_producer.py</code>): Streams rows from the CSV into Kafka topic.</li></ol><ol type="1" id="1a88ae25-7855-807f-8633-db2330585d21" class="numbered-list" start="4"><li><strong>Spark Streaming Script</strong> (<code>spark_streaming.py</code>): Subscribes to Kafka, loads pre-trained model, flags anomalies, writes them to CSV.</li></ol><ol type="1" id="1a88ae25-7855-8030-ad91-dbf119bf97f8" class="numbered-list" start="5"><li><strong>Streamlit Dashboard</strong> (<code>dashboard.py</code>): Displays flagged anomalies in real time.</li></ol><ol type="1" id="1a88ae25-7855-802a-a7f3-e20643a88652" class="numbered-list" start="6"><li><strong>Deployment</strong>: GCP VM (Compute Engine) used to host Kafka + Spark + the entire pipeline.</li></ol><h2 id="1a88ae25-7855-806c-a45f-cf84920b3b30" class="">4.3 Why PaySim?</h2><ul id="1a88ae25-7855-80b3-8803-e7d634f1c049" class="bulleted-list"><li style="list-style-type:disc">The PaySim dataset is large (~6 million rows), capturing the complexity of real transactions.</li></ul><ul id="1a88ae25-7855-80e7-b2de-d97c6828b66d" class="bulleted-list"><li style="list-style-type:disc">The presence of an <strong>isFraud</strong> label allows for <strong>evaluation</strong> of anomaly detection.</li></ul><ul id="1a88ae25-7855-808f-bf54-ecb5fc9a3b45" class="bulleted-list"><li style="list-style-type:disc">It’s free, synthetic, and widely known in academic/industry examples.</li></ul><h2 id="1a88ae25-7855-806a-a9d5-c65f923a81b4" class="">4.4 Why Real-Time?</h2><p id="1a88ae25-7855-8065-90b7-ea5f96933e23" class="">Fraud detection is most valuable when <strong>immediate</strong>. The faster we detect suspicious activity, the faster we can block it or investigate. Traditional offline batch detection might be too slow.</p><hr id="1a88ae25-7855-80d9-aa84-cdf91e568498"/><h1 id="1a88ae25-7855-80c1-9c6d-e02c34fd2449" class="">5. EXPLORATORY DATA ANALYSIS (EDA), FEATURE ENGINEERING, AND MODEL TRAINING</h1><h2 id="1a88ae25-7855-8078-b498-f5ea31ed27c2" class="">5.1 EDA</h2><h3 id="1a88ae25-7855-80e5-b5e3-f540834cb157" class="">5.1.1 Basic Statistics</h3><ul id="1a88ae25-7855-802f-8e5d-e1ef5a016a7a" class="bulleted-list"><li style="list-style-type:disc"><strong>Total rows</strong>: ~6,362,620</li></ul><ul id="1a88ae25-7855-80f7-b44f-fa733a0a7a74" class="bulleted-list"><li style="list-style-type:disc"><strong>Fraud</strong>: ~8,213 (only ~0.13%).</li></ul><ul id="1a88ae25-7855-80e2-92ee-c31a3c72edc3" class="bulleted-list"><li style="list-style-type:disc"><strong>Transaction Types</strong>: Payment, Transfer, Cash Out, Debit, etc.</li></ul><ul id="1a88ae25-7855-8053-a766-f1c954c9aa39" class="bulleted-list"><li style="list-style-type:disc"><strong>Distribution of </strong><code><strong>amount</strong></code>: Skewed; many small transactions, few extremely large.</li></ul><h3 id="1a88ae25-7855-80a6-841d-e6c16edbbddd" class="">5.1.2 Visualizations</h3><ol type="1" id="1a88ae25-7855-8030-adf6-c9ec602e8049" class="numbered-list" start="1"><li><strong>Fraud vs. Non-Fraud Count</strong><ul id="1a88ae25-7855-8026-bae1-d3bcfa9b6a4d" class="bulleted-list"><li style="list-style-type:disc">A bar chart showing an enormous imbalance: ~6.35 million legitimate vs. ~8k fraud.</li></ul><figure id="1a88ae25-7855-80d9-8622-d1ebad370cb2" class="image"><a href="Real-Time%20Fraud%20Detection%20in%20Transactions%201a88ae25785580658a2ce729daf5f5b5/image%201.png"><img style="width:554px" src="Real-Time%20Fraud%20Detection%20in%20Transactions%201a88ae25785580658a2ce729daf5f5b5/image%201.png"/></a></figure></li></ol><ol type="1" id="1a88ae25-7855-803f-89d2-f63952c1f041" class="numbered-list" start="2"><li><strong>Transaction Types</strong><ul id="1a88ae25-7855-8078-a98f-e37f9a864b8d" class="bulleted-list"><li style="list-style-type:disc">Payment is the most common type, followed by Transfer and Cash Out.</li></ul><figure id="1a88ae25-7855-8094-892d-dbcd6149d356" class="image"><a href="Real-Time%20Fraud%20Detection%20in%20Transactions%201a88ae25785580658a2ce729daf5f5b5/image%202.png"><img style="width:567px" src="Real-Time%20Fraud%20Detection%20in%20Transactions%201a88ae25785580658a2ce729daf5f5b5/image%202.png"/></a></figure></li></ol><ol type="1" id="1a88ae25-7855-80e3-89bb-ce1ee04017c4" class="numbered-list" start="3"><li><strong>Time Step Analysis</strong><ul id="1a88ae25-7855-80be-899f-cd5e6d0e2af7" class="bulleted-list"><li style="list-style-type:disc">Plotted transaction volume over <code>step</code>. Typically remains fairly stable but some peaks.</li></ul></li></ol><figure id="1a88ae25-7855-80bb-a283-fe7e02cd5957" class="image"><a href="Real-Time%20Fraud%20Detection%20in%20Transactions%201a88ae25785580658a2ce729daf5f5b5/image%203.png"><img style="width:709.984375px" src="Real-Time%20Fraud%20Detection%20in%20Transactions%201a88ae25785580658a2ce729daf5f5b5/image%203.png"/></a></figure><h2 id="1a88ae25-7855-801b-b82f-fdfa00a90597" class="">5.2 Feature Engineering</h2><ol type="1" id="1a88ae25-7855-80d8-8263-ffa94caf7dcb" class="numbered-list" start="1"><li><strong>One-Hot Encode</strong> <code>type</code>:<ul id="1a88ae25-7855-80d2-82ba-c3633831f720" class="bulleted-list"><li style="list-style-type:disc"><code>type_TRANSFER</code> = 1 if the transaction type is “TRANSFER,” else 0</li></ul><ul id="1a88ae25-7855-8050-b426-e5c993fbeec1" class="bulleted-list"><li style="list-style-type:disc"><code>type_CASH_OUT</code>, <code>type_DEBIT</code>, etc.</li></ul></li></ol><ol type="1" id="1a88ae25-7855-8081-b2d1-db325cc79da5" class="numbered-list" start="2"><li><strong>Delta Balances</strong>:<ul id="1a88ae25-7855-8089-9f18-d1c1c6a989b5" class="bulleted-list"><li style="list-style-type:disc"><code>delta_balanceOrig = newbalanceOrig - oldbalanceOrg</code></li></ul><ul id="1a88ae25-7855-808e-80e7-fca64bd6521d" class="bulleted-list"><li style="list-style-type:disc"><code>delta_balanceDest = newbalanceDest - oldbalanceDest</code></li></ul></li></ol><ol type="1" id="1a88ae25-7855-8035-afbe-ebe42b597514" class="numbered-list" start="3"><li><strong>Ratio</strong>:<ul id="1a88ae25-7855-8024-af3d-eeddd994dca6" class="bulleted-list"><li style="list-style-type:disc"><code>amount_div_oldbalanceOrg</code> = <code>amount / oldbalanceOrg</code> (when <code>oldbalanceOrg</code> &gt; 0)</li></ul><ul id="1a88ae25-7855-801f-882f-fe094cb26ca7" class="bulleted-list"><li style="list-style-type:disc">Helps detect if someone is draining their entire account in one go.</li></ul></li></ol><h2 id="1a88ae25-7855-8026-96d4-ce02c00d5d4a" class="">5.3 Model Choices and Why</h2><p id="1a88ae25-7855-80a8-87ad-f100f99de866" class="">We tested three unsupervised (or novelty) approaches:</p><ol type="1" id="1a88ae25-7855-8071-b40e-e51f92109c29" class="numbered-list" start="1"><li><strong>IsolationForest</strong><ul id="1a88ae25-7855-80e3-bacd-ce3950b554e9" class="bulleted-list"><li style="list-style-type:disc">Excels at isolating anomalies by randomly partitioning data.</li></ul><ul id="1a88ae25-7855-80fe-9567-fefcd6882aaa" class="bulleted-list"><li style="list-style-type:disc">Very popular for high-dimensional data.</li></ul><ul id="1a88ae25-7855-8079-9d33-fc91e886e55d" class="bulleted-list"><li style="list-style-type:disc">In scikit-learn, we do <code>IsolationForest(...).fit(...)</code>.</li></ul></li></ol><ol type="1" id="1a88ae25-7855-8015-bbc5-ec47b7b21672" class="numbered-list" start="2"><li><strong>Local Outlier Factor (LOF)</strong><ul id="1a88ae25-7855-80e1-8f0d-fb4b01b92f35" class="bulleted-list"><li style="list-style-type:disc">Density-based approach, compares local density of each sample to neighbors.</li></ul><ul id="1a88ae25-7855-80a1-ae3e-d4554be984a1" class="bulleted-list"><li style="list-style-type:disc">Good for small or moderate datasets, but can be expensive for large data (LOF is O(n^2) with naive approach).</li></ul></li></ol><ol type="1" id="1a88ae25-7855-800c-8e29-c3364675008e" class="numbered-list" start="3"><li><strong>Autoencoder (Neural Network)</strong><ul id="1a88ae25-7855-8077-bb56-f6864f3785b9" class="bulleted-list"><li style="list-style-type:disc">A deep learning approach.</li></ul><ul id="1a88ae25-7855-80fd-915b-f1820c1b685a" class="bulleted-list"><li style="list-style-type:disc">Trained on normal (non-fraud) data to learn a compressed representation.</li></ul><ul id="1a88ae25-7855-8077-bad7-f94471216e08" class="bulleted-list"><li style="list-style-type:disc">High reconstruction error on anomalies.</li></ul><figure id="1a88ae25-7855-801c-b58d-ddc5046c04cc" class="image"><a href="Real-Time%20Fraud%20Detection%20in%20Transactions%201a88ae25785580658a2ce729daf5f5b5/image%204.png"><img style="width:681.9921875px" src="Real-Time%20Fraud%20Detection%20in%20Transactions%201a88ae25785580658a2ce729daf5f5b5/image%204.png"/></a></figure><figure id="1a88ae25-7855-809d-bc07-d94a82060027" class="image"><a href="Real-Time%20Fraud%20Detection%20in%20Transactions%201a88ae25785580658a2ce729daf5f5b5/image%205.png"><img style="width:709.96875px" src="Real-Time%20Fraud%20Detection%20in%20Transactions%201a88ae25785580658a2ce729daf5f5b5/image%205.png"/></a></figure></li></ol><figure id="1a88ae25-7855-80ee-ab47-ca71ea447b3f" class="image"><a href="Real-Time%20Fraud%20Detection%20in%20Transactions%201a88ae25785580658a2ce729daf5f5b5/image%206.png"><img style="width:709.984375px" src="Real-Time%20Fraud%20Detection%20in%20Transactions%201a88ae25785580658a2ce729daf5f5b5/image%206.png"/></a></figure><h2 id="1a88ae25-7855-80e4-a5ae-efc3f8d7ee5d" class="">5.4 Performance of Each Model</h2><p id="1a88ae25-7855-80bb-805e-d25a587fb221" class="">Based on our final classification reports (since we tested them on a labeled portion), we found:</p><h3 id="1a88ae25-7855-807d-b8d6-c7eac937a843" class="">5.4.1 IsolationForest</h3><ul id="1a88ae25-7855-804f-af79-c7fbf993f01a" class="bulleted-list"><li style="list-style-type:disc"><strong>Precision (Fraud)</strong>: ~0.01</li></ul><ul id="1a88ae25-7855-805a-b40d-f28854da56bc" class="bulleted-list"><li style="list-style-type:disc"><strong>Recall (Fraud)</strong>: ~0.60</li></ul><ul id="1a88ae25-7855-80b1-b05e-d56f6da259c3" class="bulleted-list"><li style="list-style-type:disc"><strong>F1</strong>: ~0.02</li></ul><p id="1a88ae25-7855-80e8-a6b8-d8090d597fb3" class="">This means it catches ~60% of fraud but with a very small precision (tons of false positives).</p><h3 id="1a88ae25-7855-803d-b339-df06b3b58bad" class="">5.4.2 LOF</h3><ul id="1a88ae25-7855-807c-9e24-cc20f7d4d442" class="bulleted-list"><li style="list-style-type:disc"><strong>Precision (Fraud)</strong>: ~0.00</li></ul><ul id="1a88ae25-7855-8078-bcc6-c51612d28f9d" class="bulleted-list"><li style="list-style-type:disc"><strong>Recall (Fraud)</strong>: ~0.03 or 0.05</li></ul><ul id="1a88ae25-7855-80e0-bdea-ed8be95b1de7" class="bulleted-list"><li style="list-style-type:disc"><strong>F1</strong>: ~0.00 or 0.01</li></ul><p id="1a88ae25-7855-803f-a1da-c8172cba3791" class="">LOF typically had the worst performance here—lots of difficulties with large-scale data.</p><h3 id="1a88ae25-7855-8095-a727-c9dc03ee26a9" class="">5.4.3 Autoencoder</h3><ul id="1a88ae25-7855-8095-8a89-f5384ef3abd7" class="bulleted-list"><li style="list-style-type:disc"><strong>Precision (Fraud)</strong>: ~0.06 or 0.07</li></ul><ul id="1a88ae25-7855-801f-b78f-dd2b39fc4428" class="bulleted-list"><li style="list-style-type:disc"><strong>Recall (Fraud)</strong>: ~0.50 or 0.54</li></ul><ul id="1a88ae25-7855-806b-b3f0-f02501a5d9e1" class="bulleted-list"><li style="list-style-type:disc"><strong>F1</strong>: ~0.11 or 0.12</li></ul><p id="1a88ae25-7855-8010-bf02-dcfe3a845dd9" class="">This is better than the other two, giving a more balanced approach. Still plenty of false positives, but decent coverage of fraud.</p><figure id="1a88ae25-7855-801a-b6fc-e09906c3b6c2" class="image"><a href="Real-Time%20Fraud%20Detection%20in%20Transactions%201a88ae25785580658a2ce729daf5f5b5/image%207.png"><img style="width:709.984375px" src="Real-Time%20Fraud%20Detection%20in%20Transactions%201a88ae25785580658a2ce729daf5f5b5/image%207.png"/></a></figure><h2 id="1a88ae25-7855-8002-8ea2-c098de305f4c" class="">5.5 Selecting the Final Model</h2><p id="1a88ae25-7855-8046-81e9-c1354849a8e5" class="">We eventually picked <strong>IsolationForest</strong> in the real-time pipeline because:</p><ul id="1a88ae25-7855-8008-8c68-e94d19b2aa60" class="bulleted-list"><li style="list-style-type:disc">It’s relatively quick to predict.</li></ul><ul id="1a88ae25-7855-8088-bae4-f88b613641cb" class="bulleted-list"><li style="list-style-type:disc">Doesn’t require a GPU or large overhead.</li></ul><ul id="1a88ae25-7855-80f6-a055-de7dc29655ba" class="bulleted-list"><li style="list-style-type:disc">Recall was relatively strong (~60%).</li></ul><p id="1a88ae25-7855-807d-bcd6-eefe250f9be0" class="">Though the autoencoder had decent performance, it can be more complicated to integrate or scale. Some people might prefer the autoencoder if they can handle the overhead or want a better F1.</p><hr id="1a88ae25-7855-80df-b3ac-d2be00b45570"/><h1 id="1a88ae25-7855-808f-9d0b-cb10b6aa0f01" class="">6. BUILDING THE REAL-TIME PIPELINE (KAFKA + SPARK)</h1><h2 id="1a88ae25-7855-80ad-b23d-d61fe81529b1" class="">6.1 Pipeline Architecture</h2><ol type="1" id="1a88ae25-7855-8049-997e-cf91335884af" class="numbered-list" start="1"><li><strong>Kafka Producer</strong>: A Python script (<code>kafka_producer.py</code>) that reads the PaySim CSV row by row, sending each transaction as a JSON message to a <strong>Kafka topic</strong>.</li></ol><ol type="1" id="1a88ae25-7855-8003-b1b3-dad455b9cbf9" class="numbered-list" start="2"><li><strong>Kafka Topic</strong>: e.g. “paysim_transactions.”</li></ol><ol type="1" id="1a88ae25-7855-8021-b7da-e507cb27911d" class="numbered-list" start="3"><li><strong>Spark Streaming</strong>: A script (<code>spark_streaming.py</code>) that subscribes to that Kafka topic, loads the IsolationForest model (<code>iso_forest.pkl</code>), and runs a <strong>UDF</strong> to predict anomalies.</li></ol><ol type="1" id="1a88ae25-7855-80e9-9bb5-cdef018e3b2d" class="numbered-list" start="4"><li><strong>Flagged Anomalies</strong>: Spark writes them as CSV to a specified output folder.</li></ol><figure id="1a88ae25-7855-8043-a34b-e512991f965c" class="image"><a href="Real-Time%20Fraud%20Detection%20in%20Transactions%201a88ae25785580658a2ce729daf5f5b5/image%208.png"><img style="width:709.984375px" src="Real-Time%20Fraud%20Detection%20in%20Transactions%201a88ae25785580658a2ce729daf5f5b5/image%208.png"/></a></figure><h2 id="1a88ae25-7855-800a-9d6d-d737891fd369" class="">6.2 Why Kafka?</h2><ul id="1a88ae25-7855-80d6-975d-fce6fde0c011" class="bulleted-list"><li style="list-style-type:disc"><strong>Kafka</strong> is a distributed messaging system, widely used for real-time streaming ingestion.</li></ul><ul id="1a88ae25-7855-8057-a47f-f307d5b665ed" class="bulleted-list"><li style="list-style-type:disc">Simulates a “live feed” of transactions.</li></ul><ul id="1a88ae25-7855-80ec-8b50-d65dcf43c1eb" class="bulleted-list"><li style="list-style-type:disc">Allows us to scale if we had multiple producers or more consumers.</li></ul><h2 id="1a88ae25-7855-8024-9356-feca188d59c8" class="">6.3 Why Spark Structured Streaming?</h2><ul id="1a88ae25-7855-80df-b437-eb21a5f347eb" class="bulleted-list"><li style="list-style-type:disc">It’s a popular big-data engine for <strong>stream</strong> processing.</li></ul><ul id="1a88ae25-7855-8054-b554-ce6ba0fb620f" class="bulleted-list"><li style="list-style-type:disc">Can do “micro-batches” in near-real time.</li></ul><ul id="1a88ae25-7855-806d-8584-f388b13424cb" class="bulleted-list"><li style="list-style-type:disc">Integration with Kafka is first-class (<code>spark-sql-kafka-0-10</code> connector).</li></ul><h2 id="1a88ae25-7855-801e-8760-d09a06d2daee" class="">6.4 The <code>kafka_producer.py</code> Script</h2><ol type="1" id="1a88ae25-7855-8026-8ff0-eb66c373b657" class="numbered-list" start="1"><li><strong>Uses</strong> <code>csv.DictReader</code> to read each row from “Transactions.csv.”</li></ol><ol type="1" id="1a88ae25-7855-8029-a1a2-cb380350f8c3" class="numbered-list" start="2"><li><strong>Transforms</strong> row fields (like <code>step</code>, <code>amount</code>, etc.) into a JSON message.</li></ol><ol type="1" id="1a88ae25-7855-800e-9bd4-f50a9e038e42" class="numbered-list" start="3"><li><strong>Sends</strong> to the “paysim_transactions” topic with <code>producer.send(...)</code>.</li></ol><ol type="1" id="1a88ae25-7855-807e-916f-d09f54f954a4" class="numbered-list" start="4"><li><strong>Sleeps</strong> ~0.01 seconds after each row to simulate ~100 transactions/sec.</li></ol><h2 id="1a88ae25-7855-80e4-b2a1-ff53265b62c5" class="">6.5 The <code>spark_streaming.py</code> Script</h2><h3 id="1a88ae25-7855-80c0-9c18-e9e8b69d187d" class="">6.5.1 Steps</h3><ol type="1" id="1a88ae25-7855-8020-b43c-eb590f78dd4e" class="numbered-list" start="1"><li><strong>Create SparkSession</strong> with Kafka support:<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="1a88ae25-7855-80a8-b8ca-d57404f13244" class="code"><code class="language-Python" style="white-space:pre-wrap;word-break:break-all">spark = SparkSession.builder \
+    .appName(&quot;PaySimFraudDetection&quot;) \
+    .master(&quot;local[*]&quot;) \
+    .getOrCreate()
+</code></pre></li></ol><ol type="1" id="1a88ae25-7855-80d9-9b8d-c7643271e9dc" class="numbered-list" start="2"><li><strong>Load Model</strong>:<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="1a88ae25-7855-8071-94b4-ec1d5082dea2" class="code"><code class="language-Python" style="white-space:pre-wrap;word-break:break-all">iso_forest = joblib.load(&quot;/home/.../iso_forest.pkl&quot;)
+</code></pre></li></ol><ol type="1" id="1a88ae25-7855-8079-804d-c4a02cc040ad" class="numbered-list" start="3"><li><strong>Define Schema</strong> for incoming JSON (step, amount, oldbalanceOrg, etc.).</li></ol><ol type="1" id="1a88ae25-7855-806c-b4aa-cba52b846622" class="numbered-list" start="4"><li><strong>Read from Kafka</strong>:<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="1a88ae25-7855-8003-9a92-fd6f5003dce8" class="code"><code class="language-Python" style="white-space:pre-wrap;word-break:break-all">df_kafka = spark.readStream \
+    .format(&quot;kafka&quot;) \
+    .option(&quot;kafka.bootstrap.servers&quot;, &quot;localhost:9092&quot;) \
+    .option(&quot;subscribe&quot;, &quot;paysim_transactions&quot;) \
+    .load()
+</code></pre></li></ol><ol type="1" id="1a88ae25-7855-80fb-9a12-c3172f41c1c3" class="numbered-list" start="5"><li><strong>Parse</strong> the JSON into columns.</li></ol><ol type="1" id="1a88ae25-7855-8002-8b1c-c7314d23acc2" class="numbered-list" start="6"><li><strong>UDF</strong> for <code>predict_iso(...)</code>: uses <code>iso_forest.predict(features)</code>.</li></ol><ol type="1" id="1a88ae25-7855-808d-bbcc-e808615508fa" class="numbered-list" start="7"><li><strong>Filter</strong> or mark anomalies: <code>IF_Anomaly = 1 if pred == -1 else 0</code>.</li></ol><ol type="1" id="1a88ae25-7855-805e-abe3-f1ef43cadbd8" class="numbered-list" start="8"><li><strong>Write</strong> flagged rows to CSV via:<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="1a88ae25-7855-8041-8ad3-c8a94ba714e6" class="code"><code class="language-Python" style="white-space:pre-wrap;word-break:break-all">df_fraud.writeStream \
+    .outputMode(&quot;append&quot;) \
+    .format(&quot;csv&quot;) \
+    .option(&quot;path&quot;, &quot;/home/monishaapatro/flagged_anomalies&quot;) \
+    .option(&quot;checkpointLocation&quot;, &quot;/home/monishaapatro/checkpoints&quot;) \
+    .start() \
+    .awaitTermination()
+</code></pre></li></ol><h2 id="1a88ae25-7855-8081-9217-c6baed696161" class="">6.6 Google Cloud Platform</h2><p id="1a88ae25-7855-807f-b03a-f16025fc796b" class="">We used a <strong>Compute Engine</strong> VM for:</p><ul id="1a88ae25-7855-8068-acee-dabf13a9c8ac" class="bulleted-list"><li style="list-style-type:disc"><strong>Installing</strong> Kafka, Spark.</li></ul><ul id="1a88ae25-7855-8024-82dd-cc6044bb74af" class="bulleted-list"><li style="list-style-type:disc"><strong>Running</strong> the producer script, the Spark streaming job.</li></ul><ul id="1a88ae25-7855-8064-be00-f7d32b191f26" class="bulleted-list"><li style="list-style-type:disc">Because it’s often cheaper or straightforward than other clouds, but the same approach can be done on AWS, Azure, or local servers.</li></ul><hr id="1a88ae25-7855-80c7-be13-dbe65dadef3d"/><h1 id="1a88ae25-7855-8067-a111-ff83c7cd1611" class="">7. INSTALLING DEPENDENCIES AND SETTING UP</h1><h2 id="1a88ae25-7855-8007-a604-fa0a0de13e49" class="">7.1 Dependencies</h2><ul id="1a88ae25-7855-805f-9562-ecd5c10a473a" class="bulleted-list"><li style="list-style-type:disc"><strong>Java</strong> (needed by Kafka &amp; Spark)</li></ul><ul id="1a88ae25-7855-8029-85e4-c8026a0ca67b" class="bulleted-list"><li style="list-style-type:disc"><strong>Python 3.11</strong> </li></ul><ul id="1a88ae25-7855-80b6-81db-c5df72926b7a" class="bulleted-list"><li style="list-style-type:disc"><strong>Pip packages</strong>: <code>pandas</code>, <code>numpy</code>, <code>scikit-learn</code>, <code>streamlit</code>, <code>joblib</code>, etc.</li></ul><ul id="1a88ae25-7855-8056-9afa-c55fd27d5f7b" class="bulleted-list"><li style="list-style-type:disc"><strong>Spark</strong>: downloaded from apache.org (like spark-3.5.4-bin-hadoop3).</li></ul><ul id="1a88ae25-7855-80f2-9f6b-fe556fea4eb1" class="bulleted-list"><li style="list-style-type:disc"><strong>Kafka</strong>: downloaded from apache.org or used <code>kafka_2.13-3.5.1.tgz</code>.</li></ul><h3 id="1a88ae25-7855-8076-b48c-d54f6cffdd9d" class="">7.1.1 Installing Kafka</h3><ol type="1" id="1a88ae25-7855-809e-9392-ed99b44ea61e" class="numbered-list" start="1"><li>Download the <code>.tgz</code>.</li></ol><ol type="1" id="1a88ae25-7855-80b8-925e-ce1b6af884b3" class="numbered-list" start="2"><li>Extract to <code>~/kafka_folder</code>.</li></ol><ol type="1" id="1a88ae25-7855-802a-a75e-ce404d859c23" class="numbered-list" start="3"><li>Start Zookeeper, then start Kafka server:<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="1a88ae25-7855-80e3-8e8a-f26ad40da476" class="code"><code class="language-Shell" style="white-space:pre-wrap;word-break:break-all">bin/zookeeper-server-start.sh config/zookeeper.properties
+bin/kafka-server-start.sh config/server.properties
+</code></pre></li></ol><h3 id="1a88ae25-7855-80ac-b05d-f43410fdbc00" class="">7.1.2 Installing Spark</h3><ol type="1" id="1a88ae25-7855-803d-b7e5-f89f0dbda2a8" class="numbered-list" start="1"><li>Download the Spark binary.</li></ol><ol type="1" id="1a88ae25-7855-80eb-9dcb-c16b7cc6fde9" class="numbered-list" start="2"><li>Extract to <code>~/spark</code>.</li></ol><ol type="1" id="1a88ae25-7855-8046-a78e-e7f90e18526a" class="numbered-list" start="3"><li>Add environment variables or just call <code>~/spark/bin/spark-submit</code>.</li></ol><h2 id="1a88ae25-7855-8001-91f4-dd5ad76ed149" class="">7.2 Uploading Models and Dataset</h2><ul id="1a88ae25-7855-8068-b17b-fc534c0ba5a7" class="bulleted-list"><li style="list-style-type:disc">Transferred <code>iso_forest.pkl</code>, <code>Transactions.csv</code>, etc., to the VM using either <code>scp</code> or the GCP browser-based SSH’s “Upload file.”</li></ul><ul id="1a88ae25-7855-80c8-919d-ccb2d4e592d0" class="bulleted-list"><li style="list-style-type:disc">Placed them in our home directory or specific folders.</li></ul><ul id="1a88ae25-7855-80b6-83ec-ddfea7ff3ac1" class="bulleted-list"><li style="list-style-type:disc">Confirmed paths in scripts: e.g., <code>CSV_PATH = &quot;/home/monishaapatro/Transactions.csv&quot;</code>.</li></ul><hr id="1a88ae25-7855-80bd-ae3b-f7fbc143698a"/><h1 id="1a88ae25-7855-8066-a5fb-e46dc64dc279" class="">8. FLAGGED ANOMALIES AND HOW THEY ARE DETERMINED</h1><ol type="1" id="1a88ae25-7855-802d-8a46-f017c32d844a" class="numbered-list" start="1"><li><strong>IsolationForest</strong> returns <code>predict(...)</code> = <code>1</code> for anomaly, <code>+1</code> for normal.</li></ol><ol type="1" id="1a88ae25-7855-803d-9f2c-db0da581d647" class="numbered-list" start="2"><li>We convert <code>1 → 1 (IF_Anomaly=1)</code> meaning flagged as suspicious.</li></ol><ol type="1" id="1a88ae25-7855-80a5-89c9-c1ec45648fb5" class="numbered-list" start="3"><li>The script effectively says: “If anomaly, print or filter to a separate DataFrame.”</li></ol><ol type="1" id="1a88ae25-7855-802b-8943-c9b2dd11e7b8" class="numbered-list" start="4"><li>Spark’s streaming job writes those anomaly rows to <strong>CSV</strong> (the “flagged_anomalies” folder).</li></ol><p id="1a88ae25-7855-80d4-9a24-ff351240bba5" class="">Hence, “flagged anomalies” are simply transactions that the model deems suspicious, typically because they deviate from normal patterns.</p><hr id="1a88ae25-7855-80c7-a04c-d9173de04c91"/><h1 id="1a88ae25-7855-80bc-9309-d8410d5de326" class="">9. TRANSPORTING ANOMALIES TO CSV</h1><ol type="1" id="1a88ae25-7855-80b9-b947-ebbc5178bd11" class="numbered-list" start="1"><li>The final <code>df_anomalies</code> (or <code>df_fraud</code>) is written out by <code>df_anomalies.writeStream</code> with <code>format(&quot;csv&quot;)</code>.</li></ol><ol type="1" id="1a88ae25-7855-80e8-895c-e22e407573fa" class="numbered-list" start="2"><li>Each micro-batch creates a <code>part-00000-xxxx.csv</code> file in the target folder.</li></ol><ol type="1" id="1a88ae25-7855-8046-ade8-fc60f9abee3b" class="numbered-list" start="3"><li><code>_spark_metadata</code> is also created for housekeeping.</li></ol><ol type="1" id="1a88ae25-7855-8016-a2fb-fd42962afa99" class="numbered-list" start="4"><li>This yields a growing list of CSV files each time Spark processes new data from Kafka.</li></ol><figure id="1a88ae25-7855-8034-8d1e-f577e5af3449" class="image"><a href="Real-Time%20Fraud%20Detection%20in%20Transactions%201a88ae25785580658a2ce729daf5f5b5/image%209.png"><img style="width:709.984375px" src="Real-Time%20Fraud%20Detection%20in%20Transactions%201a88ae25785580658a2ce729daf5f5b5/image%209.png"/></a></figure><hr id="1a88ae25-7855-8033-a1c8-d40c5089afae"/><h1 id="1a88ae25-7855-80ef-b34b-e6af1deb315e" class="">10. USING STREAMLIT TO PRESENT THE DATA</h1><h2 id="1a88ae25-7855-80f2-87c9-f3e9741c2b1e" class="">10.1 Approach</h2><p id="1a88ae25-7855-80d9-ab37-f2041b809ad8" class="">We created a <strong>Streamlit</strong> app (<code>dashboard.py</code>) that:</p><ol type="1" id="1a88ae25-7855-8034-b0e2-e11331d38079" class="numbered-list" start="1"><li><strong>Loads</strong> the CSV files from “flagged_anomalies/” (or whichever directory Spark is writing to).</li></ol><ol type="1" id="1a88ae25-7855-802e-ba1d-e7f61ea1d8ff" class="numbered-list" start="2"><li><strong>Concatenates</strong> them to gather all flagged transactions.</li></ol><ol type="1" id="1a88ae25-7855-80cb-88ed-fcd8969cfb28" class="numbered-list" start="3"><li><strong>Visualizes</strong> them with line charts, bar charts, tables, etc.</li></ol><h2 id="1a88ae25-7855-80aa-97b9-cf3cab1ac353" class="">10.2 Real-Time Refresh</h2><p id="1a88ae25-7855-80a8-8f94-cf3e718ceb70" class="">Because Spark is continuously writing new part-*.csv files, the Streamlit script can periodically re-read the folder. For instance:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="1a88ae25-7855-80ef-94db-e80a766defe4" class="code"><code class="language-Python" style="white-space:pre-wrap;word-break:break-all">def load_anomalies_data():
+    files = glob.glob(&quot;/home/monishaapatro/flagged_anomalies/*.csv&quot;)
+    ...
+    # read + concat data
+    return df
+</code></pre><p id="1a88ae25-7855-800f-bb8e-eacfde03232c" class="">A “Refresh Data” button in Streamlit might call <code>load_anomalies_data()</code> again. The user sees updated anomalies in near real time.</p><figure id="1a88ae25-7855-80be-9067-dc9e2d9071f1" class="image"><a href="Real-Time%20Fraud%20Detection%20in%20Transactions%201a88ae25785580658a2ce729daf5f5b5/image%2010.png"><img style="width:2850px" src="Real-Time%20Fraud%20Detection%20in%20Transactions%201a88ae25785580658a2ce729daf5f5b5/image%2010.png"/></a></figure><figure id="1a88ae25-7855-8091-9386-c3b4342abf22" class="image"><a href="Real-Time%20Fraud%20Detection%20in%20Transactions%201a88ae25785580658a2ce729daf5f5b5/image%2011.png"><img style="width:709.984375px" src="Real-Time%20Fraud%20Detection%20in%20Transactions%201a88ae25785580658a2ce729daf5f5b5/image%2011.png"/></a></figure><figure id="1a88ae25-7855-806a-8984-d4bf79ecf6b6" class="image"><a href="Real-Time%20Fraud%20Detection%20in%20Transactions%201a88ae25785580658a2ce729daf5f5b5/image%2012.png"><img style="width:2720px" src="Real-Time%20Fraud%20Detection%20in%20Transactions%201a88ae25785580658a2ce729daf5f5b5/image%2012.png"/></a></figure><h2 id="1a88ae25-7855-803f-93d4-e32734fddc52" class="">10.3 External Access</h2><ul id="1a88ae25-7855-80a2-802d-c94f863020b9" class="bulleted-list"><li style="list-style-type:disc">If hosting on the <strong>same</strong> GCP VM, we can open the firewall for port 8501 and share the IP.</li></ul><ul id="1a88ae25-7855-80fc-8154-e32f521a68ef" class="bulleted-list"><li style="list-style-type:disc">We <strong>deploy</strong> to <strong>Streamlit Community Cloud</strong> with static sample data.</li></ul><hr id="1a88ae25-7855-80e5-8ce0-da2d5bae74fa"/><h1 id="1a88ae25-7855-8062-acea-e0ad586c4094" class="">11. BENEFITS OF THE PROJECT</h1><ol type="1" id="1a88ae25-7855-8046-ac44-d88be7691003" class="numbered-list" start="1"><li><strong>Rapid Detection</strong>:<ul id="1a88ae25-7855-80f9-87b7-d1bd9b9686eb" class="bulleted-list"><li style="list-style-type:disc">Instead of batch detection after the fact, suspicious transactions can be flagged within seconds.</li></ul></li></ol><ol type="1" id="1a88ae25-7855-80ad-918b-e0e5e019d0ad" class="numbered-list" start="2"><li><strong>Scalability</strong>:<ul id="1a88ae25-7855-80e0-b809-e0273acdaf64" class="bulleted-list"><li style="list-style-type:disc">Kafka + Spark can handle millions of events per day.</li></ul><ul id="1a88ae25-7855-8079-b751-ca77e2213755" class="bulleted-list"><li style="list-style-type:disc">The unsupervised ML approach can be extended to more advanced or ensemble methods.</li></ul></li></ol><ol type="1" id="1a88ae25-7855-806e-841f-e1e0b615fb89" class="numbered-list" start="3"><li><strong>End-to-End Pipeline</strong>:<ul id="1a88ae25-7855-807f-bc55-ef0fdadee1c4" class="bulleted-list"><li style="list-style-type:disc">Showcases ingestion, stream processing, ML inference, and final visualization—a full data engineering + data science solution.</li></ul></li></ol><ol type="1" id="1a88ae25-7855-802c-9d92-c9d29bfca401" class="numbered-list" start="4"><li><strong>Demonstrates</strong> skill in:<ul id="1a88ae25-7855-8046-a7a5-ea1be0afc6b3" class="bulleted-list"><li style="list-style-type:disc">Big data tools (Kafka, Spark)</li></ul><ul id="1a88ae25-7855-800c-a137-e7583c745998" class="bulleted-list"><li style="list-style-type:disc">Cloud environment (GCP)</li></ul><ul id="1a88ae25-7855-808f-93c4-d69c8c9d25cb" class="bulleted-list"><li style="list-style-type:disc">Machine learning (IsolationForest, LOF, Autoencoder)</li></ul><ul id="1a88ae25-7855-8038-821c-ec43df81d5a3" class="bulleted-list"><li style="list-style-type:disc">Dashboarding (Streamlit)</li></ul></li></ol><hr id="1a88ae25-7855-8098-ac8b-fc8e9553aeda"/><h1 id="1a88ae25-7855-803f-b25e-d3d09269212c" class="">12. FULL LIST OF SKILLS, TOOLS, FRAMEWORKS</h1><ul id="1a88ae25-7855-802b-a04c-ca84e7a2c4b1" class="bulleted-list"><li style="list-style-type:disc"><strong>Python</strong> (3.11)</li></ul><ul id="1a88ae25-7855-80a9-89bb-de9452020cee" class="bulleted-list"><li style="list-style-type:disc"><strong>Kafka</strong> (Apache Kafka 2.13+ distribution)</li></ul><ul id="1a88ae25-7855-807b-895e-c0737b60dab0" class="bulleted-list"><li style="list-style-type:disc"><strong>Spark</strong> (Spark 3.5.4 with Structured Streaming + Kafka connector)</li></ul><ul id="1a88ae25-7855-803a-b9f2-ebb3519b8ce2" class="bulleted-list"><li style="list-style-type:disc"><strong>Scikit-learn</strong> (for isolation forests, LOF)</li></ul><ul id="1a88ae25-7855-8017-8c74-e8540a0737d3" class="bulleted-list"><li style="list-style-type:disc"><strong>TensorFlow</strong>/Keras</li></ul><ul id="1a88ae25-7855-80b1-bb78-d7deb3e40012" class="bulleted-list"><li style="list-style-type:disc"><strong>pandas</strong>, <strong>numpy</strong>, <strong>seaborn</strong>, <strong>matplotlib</strong> (EDA, data wrangling)</li></ul><ul id="1a88ae25-7855-80cd-9da6-ea6ab08703f9" class="bulleted-list"><li style="list-style-type:disc"><strong>Streamlit</strong> (for real-time dashboard)</li></ul><ul id="1a88ae25-7855-804e-804c-d48cc191db7d" class="bulleted-list"><li style="list-style-type:disc"><strong>Google Cloud Platform</strong><ul id="1a88ae25-7855-80d3-9c81-d0da822d51af" class="bulleted-list"><li style="list-style-type:circle"><strong>Compute Engine</strong> VM</li></ul></li></ul><ul id="1a88ae25-7855-807a-bcb3-d75284d4ffb2" class="bulleted-list"><li style="list-style-type:disc"><strong>Git</strong>, <strong>GitHub</strong> (version control)</li></ul><ul id="1a88ae25-7855-80da-bf5a-f50d75c139a5" class="bulleted-list"><li style="list-style-type:disc">Potentially <strong>tmux</strong> or <strong>systemd</strong> for running scripts on the VM continuously</li></ul><ul id="1a88ae25-7855-80fc-80e3-e87d2589c728" class="bulleted-list"><li style="list-style-type:disc">If using the Kaggle API, <strong>kaggle</strong> CLI.</li></ul><hr id="1a88ae25-7855-80ba-a494-ef0f79631afb"/><h1 id="1a88ae25-7855-800e-a749-f0199c040517" class="">13. CONCLUSION</h1><p id="1a88ae25-7855-80c0-8cd3-fb23f7ef9b61" class="">This project demonstrates a <strong>complete pipeline</strong> for <strong>Real-Time Fraud Detection</strong>:</p><ol type="1" id="1a88ae25-7855-80a8-93b8-f1151d9f7433" class="numbered-list" start="1"><li>We <strong>ingest</strong> synthetic transactions from the PaySim dataset in a streaming manner using Kafka.</li></ol><ol type="1" id="1a88ae25-7855-80b8-bc1f-f22a4bfca7a6" class="numbered-list" start="2"><li><strong>Spark</strong> processes each transaction, applies an <strong>IsolationForest</strong> anomaly detection model, and flags suspicious ones.</li></ol><ol type="1" id="1a88ae25-7855-80fd-b728-c1a0903881cf" class="numbered-list" start="3"><li>These flagged anomalies are <strong>written</strong> to CSV.</li></ol><ol type="1" id="1a88ae25-7855-807b-abd5-cef9141cdb83" class="numbered-list" start="4"><li>A <strong>Streamlit dashboard</strong> reads those CSVs, producing interactive charts and tables to help investigators or analysts see suspicious transactions in near real time.</li></ol><ol type="1" id="1a88ae25-7855-8057-9cd2-d5a8cc26e1bc" class="numbered-list" start="5"><li>Everything is deployed on a GCP VM, showcasing <strong>cloud</strong> and <strong>big data</strong> skills.</li></ol><p id="1a88ae25-7855-8032-bf0c-e0c69d057224" class="">Despite being synthetic, the <strong>PaySim</strong> dataset is large enough to <strong>replicate</strong> real production-scale challenges. This blueprint can adapt to a real financial system by hooking into actual transaction streams, training a more robust model on real data, and employing advanced security measures.</p><hr id="1a88ae25-7855-8038-bb7c-cf4c67738d4a"/><h1 id="1a88ae25-7855-8082-8b9a-e191e384376f" class="">14. FUTURE WORK</h1><ol type="1" id="1a88ae25-7855-8055-bcaa-e58c63c43fad" class="numbered-list" start="1"><li><strong>Ensemble Models</strong>: Combine multiple anomaly detection models (e.g., autoencoder + isolation forest) for improved precision.</li></ol><ol type="1" id="1a88ae25-7855-80d2-b106-eb98e61ff05c" class="numbered-list" start="2"><li><strong>Incorporate Additional Features</strong>: E.g., geographic location, device info, historical user patterns.</li></ol><ol type="1" id="1a88ae25-7855-8062-9b03-d2dd0ab01ff6" class="numbered-list" start="3"><li><strong>Real Production</strong>: Use a real streaming pipeline with secure authentication, encryption, and robust monitoring.</li></ol><ol type="1" id="1a88ae25-7855-8090-9cdf-e7865cb4e77d" class="numbered-list" start="4"><li><strong>Active Learning</strong>: Collect feedback from fraud investigators to refine the model.</li></ol><ol type="1" id="1a88ae25-7855-80d0-9cdd-ec7e85aa7028" class="numbered-list" start="5"><li><strong>Advanced Visualizations</strong>: Implement a more dynamic real-time chart that auto-refreshes every few seconds.</li></ol><ol type="1" id="1a88ae25-7855-80d3-a086-e560667956f1" class="numbered-list" start="6"><li><strong>Auto-scaling</strong>: Deploy Kafka + Spark on a cluster.</li></ol><ol type="1" id="1a88ae25-7855-8016-97c2-c50af11836fb" class="numbered-list" start="7"><li><strong>Deployment</strong>: Containerize with Docker + use a platform like Cloud Run or Kubernetes for fully managed scaling.</li></ol><hr id="1a88ae25-7855-80dc-925a-fafe79e4010e"/><h1 id="1a88ae25-7855-801d-b2f4-ca2f1d06e753" class="">15. BONUS SECTIONS OR ADDITIONS</h1><ul id="1a88ae25-7855-800c-bda8-c67cc9ac2878" class="bulleted-list"><li style="list-style-type:disc"><strong>Performance Tuning</strong>:<ul id="1a88ae25-7855-80ab-bce1-e39ff8789fba" class="bulleted-list"><li style="list-style-type:circle">Spark micro-batch interval configuration, partitioning strategies for Kafka.</li></ul><ul id="1a88ae25-7855-8070-8fbd-d31cf19a6063" class="bulleted-list"><li style="list-style-type:circle">Model hyperparameter tuning for isolation forest.</li></ul></li></ul><ul id="1a88ae25-7855-80a6-891f-f025ec718316" class="bulleted-list"><li style="list-style-type:disc"><strong>Security</strong>:<ul id="1a88ae25-7855-80b5-ba25-cd7c6b7887ff" class="bulleted-list"><li style="list-style-type:circle">SSL/TLS for Kafka, firewall rules for the GCP VM.</li></ul></li></ul><ul id="1a88ae25-7855-8018-94d5-e13117bcdde8" class="bulleted-list"><li style="list-style-type:disc"><strong>Data Governance</strong>:<ul id="1a88ae25-7855-80ad-b836-e11eee7385cb" class="bulleted-list"><li style="list-style-type:circle">Real deployment must respect KYC (Know Your Customer), AML (Anti-Money Laundering) regulations.</li></ul></li></ul><hr id="1a88ae25-7855-80a5-b792-eb18c38edad0"/><h1 id="1a88ae25-7855-8096-858c-cdc8eb662eb5" class="">FINAL REMARKS</h1><p id="1a88ae25-7855-8082-8f85-fe8ff1ac44f7" class="">Built a <strong>multi-technology</strong> solution that merges <strong>data science</strong> with <strong>data engineering</strong>. Even though PaySim is synthetic, we have gained experience with:</p><ul id="1a88ae25-7855-80d6-917e-d4e967bce5c6" class="bulleted-list"><li style="list-style-type:disc"><strong>Large-scale</strong> data (6 million+ rows)</li></ul><ul id="1a88ae25-7855-80d5-8649-f098b5a8deb7" class="bulleted-list"><li style="list-style-type:disc"><strong>Real-time</strong> streaming using Kafka and Spark</li></ul><ul id="1a88ae25-7855-8000-a8f4-ebb3fb1f685d" class="bulleted-list"><li style="list-style-type:disc"><strong>Unsupervised</strong> ML approaches for fraud detection</li></ul><ul id="1a88ae25-7855-806e-8f9a-c769464c471e" class="bulleted-list"><li style="list-style-type:disc">A <strong>web dashboard</strong> (Streamlit) for easy monitoring</li></ul><ul id="1a88ae25-7855-80e9-bec5-e88612ad8e41" class="bulleted-list"><li style="list-style-type:disc"><strong>Cloud hosting</strong> on GCP</li></ul><p id="1a88ae25-7855-801b-bb69-dee70d63201e" class="">This sets the stage for to handle real production pipelines, adapt to more advanced fraud detection, and integrate with sophisticated data or security frameworks.</p></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
